@@ -1,1 +1,5 @@
 created in functionality branch
+Change the authentication plugin of your MySQL user account to use mysql_native_password instead of caching_sha2_password.
+This can be done by running the following command in your MySQL server:
+
+ALTER USER 'admindjango'@'localhost' IDENTIFIED WITH mysql_native_password BY 'employee@123!';
