@@ -7,12 +7,12 @@ from .serializer import MenuSerializer, BookingSerializer, UserSerializer
 # Create your views here.
 
 class MenuItemsView(generics.ListCreateAPIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     queryset = Menu.objects.all()
     serializer_class = MenuSerializer
     
 class SingleMenuItemView(generics.RetrieveUpdateAPIView, generics.DestroyAPIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     queryset = Menu.objects.all()
     serializer_class = MenuSerializer
     
