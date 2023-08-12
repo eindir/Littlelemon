@@ -2,6 +2,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 from ..models import Menu
+from django.contrib.auth.models import User
 
 class MenuViewSetTestCase(APITestCase):
     
@@ -16,15 +17,24 @@ class MenuViewSetTestCase(APITestCase):
         cls.item = Menu.objects.first()
         cls.list_url = reverse('menu-list')
         cls.item_url = reverse('menu-item', kwargs={'pk': cls.item.id})
+        
+        cls.user = User.objects.create_user(username="henry", password="theEighth")
 
     def test_getall(self):
         #Make a GET request to the list view and check the status code and the data
+        self.client.login(username="henry", password="theEighth")
         response = self.client.get(MenuViewSetTestCase.list_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 3)
         
+    def test_authgate(self):
+        #Make a GET request, without authenticating, to the single item view and check the status code
+        response = self.client.get(MenuViewSetTestCase.item_url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        
     def test_getitem(self):
         #Make a GET request to the single item view and check the status code and the data
+        self.client.login(username="henry", password="theEighth")
         response = self.client.get(MenuViewSetTestCase.item_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["Title"], "Ice Cream")
